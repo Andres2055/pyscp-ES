@@ -258,10 +258,10 @@ def update_credit_hubs(wiki):
 ###############################################################################
 
 wiki = pyscp.wikidot.Wiki('lafundacionscp')
-wiki.auth('andres2055', 'morrocoy')
+wiki.auth('example_username', 'example_password')
 
 pyscp.utils.default_logging()
 #update_credit_hubs(wiki)
-#update_tale_hubs(wiki)
+update_tale_hubs(wiki)
 
-update_tale_translate_hubs(wiki)
+#update_tale_translate_hubs(wiki)
