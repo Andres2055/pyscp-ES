@@ -1,18 +1,21 @@
-# pyscp
+# pyscp-ES
 
-**pyscp** is a python library for interacting with wikidot-hosted websites. The library is mainly intended for use by the administrative staff of the www.scp-wiki.net website, and has a host of feature exclusive to it. However, the majority of the core functionality should be applicalbe to any wikidot-based site.
+*pyscp-ES is a translation of the anqxyr "pyscp" repository (https://github.com/anqxyr/pyscp).*
 
-## Installation
+**pyscp-ES** es una libreria de python para interactuar con sitios webs alojados en Wikidot. La libreria está destinada principalmente para su uso por el staff administrativo del sitio web www.scp-wiki.net, y tiene una serie de características exclusivas para él. Sin embargo, la mayor parte de la funcionalidad básica debería aplicarse a cualquier sitio basado en wikidot.
 
-Download the latest code, open the containing folder, and run the following command:
+## Instalación
+
+Descargue el código actual, abra la carpeta contenedora, y ejecute el siguiente comando:
+
 ```
 pip install . --user
 ```
-Done.
+Listo.
 
-## Examples
+## Ejemplos
 
-### Acessing Pages
+### Acceso a Páginas
 
 ```python
 import pyscp
@@ -20,84 +23,84 @@ import pyscp
 wiki = pyscp.wikidot.Wiki('www.scp-wiki.net')
 p = wiki('scp-837')
 print(
-    '"{}" has a rating of {}, {} revisions, and {} comments.'
+    '"{}" tiene un puntaje de {}, {} revisiones, y {} comentarios.'
     .format(p.title, p.rating, len(p.history), len(p.comments)))
 ```
 ```
-"SCP-837: Multiplying Clay" has a rating of 108, 14 revisions, and 54 comments.
+"SCP-837: Multiplying Clay" tiene un puntaje de 108, 14 revisiones, y 54 comentarios.
 ```
 
-You can access other sites as well:
+Puedes acceder a otros sitios también:
 
 ```python
 ru_wiki = pyscp.wikidot.Wiki('scpfoundation.ru')
 p = ru_wiki('scp-837')
-print('"{}" was created by {} on {}.'.format(p.title, p.author, p.created))
+print('"{}" fue creado por {} el {}.'.format(p.title, p.author, p.created))
 ```
 ```
-"SCP-837 - Глина умножения" was created by Gene R on 2012-12-26 11:12:13.
+"SCP-837 - Глина умножения" fue creado por Gene R el 2012-12-26 11:12:13.
 ```
 
-If the site doesn't use a custom domain, you can use the name of the site instead of the full url. E.g. `Wiki('scpsandbox2')` is the same as `Wiki('scpsandbox2.wikidot.com')`.
+Si el sitio no utiliza un dominio personalizado, puede utilizar el nombre del sitio en lugar de la url completa. P.ej. `Wiki('scpsandbox2')` es lo mismo que `Wiki('scpsandbox2.wikidot.com')`.
 
-### Editing Pages
+### Editando Páginas
 
 ```python
 
 wiki = pyscp.wikidot.Wiki('scpsandbox2')
-wiki.auth('example_username', 'example_password')
+wiki.auth('nombre_de_usuario_de_ejemplo', 'contraseña_de_ejemplo')
 p = wiki('test')
 last_revision = p.history[-1].number
 p.edit(
-    source='= This is centered **text** that uses Wikidot markup.',
-    title="you can skip the title if you don't want changing it",
-    #you can leave out the comment too, but that'd be rude
-    comment='testing automated editing')
-print(p.text)   # see if it worked
-p.revert(last_revision)  # let's revert it back to what it were.
+    source='=Este es un **texto** centrado que usa la marcación de Wikidot.',
+    title="puedes saltarte el título si no quieres cambiarlo.",
+    #puedes omitir el comentario también, pero eso sería grosero.
+    comment='probando edición automática')
+print(p.text)   # vea si funcionó
+p.revert(last_revision)  # devolvámoslo a lo que era.
 ```
 ```
-This is centered text that uses Wikidot markup.
+Este es un texto centrado que usa la marcación de Wikidot.
 ```
 
 
 ### Snapshots
 
-When working with large number of pages, it could be faster to create a snapshot of the site than to download the pages one by one. Snapshots are optimized to download a large amount of data in the shortest possible time using multithreading.
+Cuando se trabaja con un gran número de páginas, podría ser más rápido crear un snapshot del sitio que descargar las páginas una por una. Los snapshots están optimizadas para descargar una gran cantidad de datos en el menor tiempo posible utilizando multi-hilos.
 
 ```python
 import pyscp
 
 creator = pyscp.snapshot.SnapshotCreator('www.scp-wiki.net', 'snapshot_file.db')
 creator.take_snapshot(forums=False)
-# that's where we wait half an hour for it to finish
+# ahí es donde esperaremos media hora para que termine.
 ```
 
-Once a snapshot is created, you can use `snapshot.Wiki` to read pages same as in the first example:
+Una vez creado un snapshot, puedes utilizar `snapshot.Wiki` para leer las páginas como en el primer ejemplo:
 
 ```python
 wiki = pyscp.snapshot.Wiki('www.scp-wiki.net', 'snapshot_file.db')
 p = wiki('scp-9005-2')
 print(
-    '"{}" has a rating of {}, was created by {}, and is awesome.'
+    '"{}" tiene un puntaje de {}, fue creado por {}, y es increible.'
     .format(p.title, p.rating, p.author))
-print('Other pages by {}:'.format(p.author))
+print('Otras páginas por {}:'.format(p.author))
 for other in wiki.list_pages(author=p.author):
     print(
-        '{} (rating: {}, created: {})'
+        '{} (puntaje: {}, creado el: {})'
         .format(other.title, other.rating, other.created))
 ```
 ```
-Page "SCP-9005-2" has a rating of 80, was created by yellowdrakex, and is awesome.
-Other pages by yellowdrakex:
-ClusterfREDACTED (rating: 112, created: 2011-10-20 18:08:49)
-Dr Rights' Draft Box (rating: None, created: 2009-02-01 18:58:36)
-Dr. Rights' Personal Log (rating: 3, created: 2008-11-26 23:03:27)
-Dr. Rights' Personnel File (rating: 13, created: 2008-11-24 20:45:34)
-Fifteen To Sixteen (rating: 17, created: 2010-02-15 05:55:58)
-Great Short Story Concepts (rating: 1, created: 2010-06-03 19:26:06)
-RUN AWAY FOREVURRR (rating: 79, created: 2011-10-24 16:34:23)
-SCP-288: The "Stepford Marriage" Rings (rating: 56, created: 2008-11-27 07:47:01)
-SCP-291: Disassembler/Reassembler (rating: 113, created: 2008-11-24 20:11:11)
+Page "SCP-9005-2" tiene un puntaje de 80, fue creado por yellowdrakex, y es increiblee.
+Otras páginas por yellowdrakex:
+ClusterfREDACTED (puntaje: 112, creado el: 2011-10-20 18:08:49)
+Dr Rights' Draft Box (puntaje: None, creado el: 2009-02-01 18:58:36)
+Dr. Rights' Personal Log (puntaje: 3, creado el: 2008-11-26 23:03:27)
+Dr. Rights' Personnel File (puntaje: 13, creado el: 2008-11-24 20:45:34)
+Fifteen To Sixteen (puntaje: 17, creado el: 2010-02-15 05:55:58)
+Great Short Story Concepts (puntaje: 1, creado el: 2010-06-03 19:26:06)
+RUN AWAY FOREVURRR (puntaje: 79, creado el: 2011-10-24 16:34:23)
+SCP-288: The "Stepford Marriage" Rings (puntaje: 56, creado el: 2008-11-27 07:47:01)
+SCP-291: Disassembler/Reassembler (puntaje: 113, creado el: 2008-11-24 20:11:11)
 ...
 ```
